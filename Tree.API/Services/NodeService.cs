@@ -5,16 +5,11 @@ namespace Tree.API.Services;
 
 public class NodeService<T> : INodeService<T>
 {
-    private readonly Node<T> _root;
-
-    public NodeService()
-    {
-        _root = new Node<T>("root");
-    }
+    private readonly Node<T> _root = new("root");
 
     public Task<Node<T>?> GetNodeByNameAsync(string name)
     {
-        return Task.Run(() => _root.FindChild(n => n.Name.Equals(name, StringComparison.OrdinalIgnoreCase)));
+        return Task.Run(() => _root.FindChild(name));
     }
 
     public async Task<Node<T>> AddNodeAsync(string name, T? data, string? parentName = null)

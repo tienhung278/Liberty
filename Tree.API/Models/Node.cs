@@ -8,25 +8,21 @@ public class Node<T> : IEnumerable<Node<T>>
     {
         Name = name;
         Children = new List<Node<T>>();
-
-        ElementsIndex = new List<Node<T>>();
     }
 
-    public Node(string name, T? data)
+    private Node(string name, T? data)
     {
         Name = name;
         Data = data;
         Children = new List<Node<T>>();
-
-        ElementsIndex = new List<Node<T>>();
     }
 
     public string Name { get; set; }
     public T? Data { get; set; }
     public Node<T>? Parent { get; set; }
+    public bool IsLeaf => Children?.Count == 0;
     public ICollection<Node<T>>? Children { get; set; }
-    private ICollection<Node<T>> ElementsIndex { get; }
-
+    
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
@@ -42,49 +38,60 @@ public class Node<T> : IEnumerable<Node<T>>
 
     public Node<T> AddChild(string name, T? data)
     {
-        var curNode = FindChild(n => n.Name.Equals(name));
+        var curNode = FindChild(name);
         if (curNode != null)
         {
             throw new ArgumentException("Node name was duplicated");
         }
+        
         Node<T> node = new(name, data) { Parent = this };
         Children?.Add(node);
-        AddChildForSearch(node);
 
         return node;
-    }
-
-    private void AddChildForSearch(Node<T> node)
-    {
-        ElementsIndex.Add(node);
-        if (Parent != null)
-            Parent.AddChildForSearch(node);
     }
 
     public void DeleteChild(Node<T> node)
     {
         Children?.Remove(node);
-        DeleteChildForSearch(node);
     }
 
-    private void DeleteChildForSearch(Node<T> node)
+    public Node<T>? FindChild(string name)
     {
-        ElementsIndex.Remove(node);
-        foreach (var child in node.Children)
+        Node<T>? node = null;
+        
+        if (Name.Equals(name))
         {
-            ElementsIndex.Remove(child);
+            return this;
         }
-        if (Parent != null)
-            Parent.DeleteChildForSearch(node);
-    }
 
-    public Node<T>? FindChild(Func<Node<T>, bool> predicate)
-    {
-        return ElementsIndex.FirstOrDefault(predicate);
-    }
+        Queue<Node<T>> queue = new Queue<Node<T>>();
 
-    public override string ToString()
-    {
-        return Name;
+        if (!IsLeaf)
+        {
+            foreach (var child in this.Children!)
+            {
+                queue.Enqueue(child);
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var nodeInQueue = queue.Dequeue();
+
+            if (nodeInQueue.Name.Equals(name))
+            {
+                node = nodeInQueue;
+            }
+
+            if (!nodeInQueue.IsLeaf)
+            {
+                foreach (var child in nodeInQueue.Children!)
+                {
+                    queue.Enqueue(child);
+                }
+            }
+        }
+
+        return node;
     }
 }
