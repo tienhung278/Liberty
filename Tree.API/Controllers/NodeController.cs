@@ -37,7 +37,7 @@ public class NodeController : Controller
         return NoContent();
     }
 
-    [HttpDelete("name")]
+    [HttpDelete("{name}")]
     public async Task<ActionResult> Delete(string name)
     {
         await _nodeService.DeleteNodeAsync(name);
