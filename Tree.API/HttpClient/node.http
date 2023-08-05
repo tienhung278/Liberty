@@ -145,5 +145,11 @@ Content-Type: application/json
   "data": "Data N"
 }
 
-### GET /api/node/I
-GET {{host}}/api/node/I
+### GET /api/node/D
+GET {{host}}/api/node/D
+
+### DELETE /api/node/M
+DELETE {{host}}/api/node/M
+
+### GET /api/node/D
+GET {{host}}/api/node/D
