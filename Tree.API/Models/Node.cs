@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace Tree.API.Models;
 
-public class Node<T> : IEnumerable<Node<T>>
+public class Node<T>
 {
     public Node(string name)
     {
@@ -19,23 +19,10 @@ public class Node<T> : IEnumerable<Node<T>>
 
     public string Name { get; set; }
     public T? Data { get; set; }
-    public Node<T>? Parent { get; set; }
-    public bool IsLeaf => Children?.Count == 0;
+    public Node<T>? Parent { get; private set; }
+    private bool IsLeaf => Children?.Count == 0;
     public ICollection<Node<T>>? Children { get; set; }
     
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public IEnumerator<Node<T>> GetEnumerator()
-    {
-        yield return this;
-        foreach (var directChild in Children!)
-        foreach (var anyChild in directChild)
-            yield return anyChild;
-    }
-
     public Task<Node<T>> AddChildAsync(string name, T? data)
     {
         return Task.Run(async () =>
