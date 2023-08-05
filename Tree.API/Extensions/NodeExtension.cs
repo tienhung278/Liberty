@@ -10,6 +10,7 @@ public static class NodeExtension
         return new NodeResponse<T>
         {
             Name = node.Name,
+            Data = node.Data,
             Children = node.Children?.Select(n => n.ToNodeResponse()).ToList()
         };
     }
