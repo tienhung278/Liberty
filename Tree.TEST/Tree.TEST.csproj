@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tree.API\Tree.API.csproj" />
+        <ProjectReference Include="..\Tree.API\Tree.API.csproj"/>
     </ItemGroup>
 
 </Project>

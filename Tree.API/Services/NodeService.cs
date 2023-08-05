@@ -20,7 +20,7 @@ public class NodeService<T> : INodeService<T>
     public async Task<Node<T>> AddNodeAsync(string name, T? data, string? parentName = null)
     {
         Node<T> node;
-        
+
         if (string.IsNullOrEmpty(parentName))
         {
             node = _root.AddChild(name, data);
@@ -30,17 +30,14 @@ public class NodeService<T> : INodeService<T>
             var parent = await GetNodeByNameAsync(parentName);
             node = parent?.AddChild(name, data)!;
         }
-        
+
         return node;
     }
 
     public async Task UpdateNodeAsync(string name, T? data)
     {
         var node = await GetNodeByNameAsync(name);
-        if (node != null)
-        {
-            node.Data = data;
-        }
+        if (node != null) node.Data = data;
     }
 
     public async Task DeleteNodeAsync(string name)
