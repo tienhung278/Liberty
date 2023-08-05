@@ -10,7 +10,6 @@ public class Node<T> : IEnumerable<Node<T>>
         Children = new List<Node<T>>();
 
         ElementsIndex = new List<Node<T>>();
-        ElementsIndex.Add(this);
     }
 
     public Node(string name, T? data)
@@ -20,16 +19,12 @@ public class Node<T> : IEnumerable<Node<T>>
         Children = new List<Node<T>>();
 
         ElementsIndex = new List<Node<T>>();
-        ElementsIndex.Add(this);
     }
 
     public string Name { get; set; }
     public T? Data { get; set; }
     public Node<T>? Parent { get; set; }
     public ICollection<Node<T>>? Children { get; set; }
-    public bool IsRoot => Parent == null;
-    public bool IsLeaf => Children?.Count == 0;
-    public int Level => IsRoot ? 0 : Parent!.Level + 1;
     private ICollection<Node<T>> ElementsIndex { get; }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -47,6 +42,11 @@ public class Node<T> : IEnumerable<Node<T>>
 
     public Node<T> AddChild(string name, T? data)
     {
+        var curNode = FindChild(n => n.Name.Equals(name));
+        if (curNode != null)
+        {
+            throw new ArgumentException("Node name was duplicated");
+        }
         Node<T> node = new(name, data) { Parent = this };
         Children?.Add(node);
         AddChildForSearch(node);

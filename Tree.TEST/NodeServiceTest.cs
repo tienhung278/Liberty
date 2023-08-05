@@ -5,6 +5,21 @@ namespace Tree.TEST;
 public class NodeServiceTest
 {
     [Fact]
+    public async void AddNode_NameDuplicated_ReturnArgumentException()
+    {
+        //Arrange
+        var nodeService = new NodeService<string>();
+
+        //Assert
+        await Assert.ThrowsAsync<ArgumentException>( async () =>
+        {
+            //Act
+            await nodeService.AddNodeAsync("A", "Data A");
+            await nodeService.AddNodeAsync("A", "Data A");
+        });
+    }
+    
+    [Fact]
     public async void AddNode_WhenCalled_ReturnNode()
     {
         //Arrange
