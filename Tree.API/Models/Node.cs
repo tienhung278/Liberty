@@ -54,12 +54,6 @@ public class Node<T> : IEnumerable<Node<T>>
         return node;
     }
 
-    public void DeleteChild(Node<T> node)
-    {
-        Children?.Remove(node);
-        DeleteChildForSearch(node);
-    }
-
     private void AddChildForSearch(Node<T> node)
     {
         ElementsIndex.Add(node);
@@ -67,9 +61,19 @@ public class Node<T> : IEnumerable<Node<T>>
             Parent.AddChildForSearch(node);
     }
 
+    public void DeleteChild(Node<T> node)
+    {
+        Children?.Remove(node);
+        DeleteChildForSearch(node);
+    }
+
     private void DeleteChildForSearch(Node<T> node)
     {
         ElementsIndex.Remove(node);
+        foreach (var child in node.Children)
+        {
+            ElementsIndex.Remove(child);
+        }
         if (Parent != null)
             Parent.DeleteChildForSearch(node);
     }

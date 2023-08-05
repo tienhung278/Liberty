@@ -41,13 +41,17 @@ public class NodeServiceTest
         var nodeService = new NodeService<string>();
         var nodeA = await nodeService.AddNodeAsync("A", "Data A");
         var nodeB = await nodeService.AddNodeAsync("B", "Data B", "A");
+        var nodeC= await nodeService.AddNodeAsync("C", "Data C", "A");
+        var nodeD= await nodeService.AddNodeAsync("D", "Data D", "B");
 
         //Act
         await nodeService.DeleteNodeAsync("B");
         var actual = await nodeService.GetNodeByNameAsync("B");
+        var actual2 = await nodeService.GetNodeByNameAsync("D");
 
         //Assert
         Assert.True(actual == null);
+        Assert.True(actual2 == null);
     }
 
     [Fact]
