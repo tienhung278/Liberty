@@ -4,8 +4,8 @@ namespace Tree.TEST;
 
 public class NodeServiceTest
 {
-    private readonly NodeService<string> _nodeService = new NodeService<string>();
-    
+    private readonly NodeService<string> _nodeService = new();
+
     private async Task PrepareDataAsync()
     {
         await _nodeService.AddNodeAsync("A", "Data A");
@@ -22,28 +22,28 @@ public class NodeServiceTest
         await _nodeService.AddNodeAsync("L", "Data L", "I");
         await _nodeService.AddNodeAsync("M", "Data M", "I");
     }
-    
+
     [Fact]
     public async void AddNode_NameDuplicated_ReturnArgumentException()
     {
         //Arrange
         await PrepareDataAsync();
-        
+
         //Assert
-        await Assert.ThrowsAsync<ArgumentException>( async () =>
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
             //Act
             await _nodeService.AddNodeAsync("A", "Data A");
             await _nodeService.AddNodeAsync("A", "Data A");
         });
     }
-    
+
     [Fact]
     public async void AddNode_WhenCalled_ReturnNode()
     {
         //Arrange
         await PrepareDataAsync();
-        
+
         //Act
         var actual = await _nodeService.AddNodeAsync("N", "Data N", "M");
 
@@ -57,7 +57,7 @@ public class NodeServiceTest
     {
         //Arrange
         await PrepareDataAsync();
-        
+
         //Act
         var actual = await _nodeService.GetNodeByNameAsync("M");
 
@@ -71,7 +71,7 @@ public class NodeServiceTest
     {
         //Arrange
         await PrepareDataAsync();
-        
+
         //Act
         await _nodeService.DeleteNodeAsync("D");
         var actual = await _nodeService.GetNodeByNameAsync("D");
@@ -89,7 +89,7 @@ public class NodeServiceTest
     {
         //Arrange
         await PrepareDataAsync();
-        
+
         //Act
         await _nodeService.UpdateNodeAsync("H", "Hello World");
         var actual = await _nodeService.GetNodeByNameAsync("H");

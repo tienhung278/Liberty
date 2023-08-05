@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Tree.API.Models;
 
 public class Node<T>
@@ -22,16 +20,13 @@ public class Node<T>
     public Node<T>? Parent { get; private set; }
     private bool IsLeaf => Children?.Count == 0;
     public ICollection<Node<T>>? Children { get; set; }
-    
+
     public Task<Node<T>> AddChildAsync(string name, T? data)
     {
         return Task.Run(async () =>
         {
             var curNode = await FindChildAsync(name);
-            if (curNode != null)
-            {
-                throw new ArgumentException("Node name was duplicated");
-            }
+            if (curNode != null) throw new ArgumentException("Node name was duplicated");
 
             Node<T> node = new(name, data) { Parent = this };
             Children?.Add(node);
@@ -50,21 +45,14 @@ public class Node<T>
         return Task.Run(() =>
         {
             Node<T>? node = null;
-        
-            if (Name.Equals(name))
-            {
-                return this;
-            }
 
-            Queue<Node<T>> queue = new Queue<Node<T>>();
+            if (Name.Equals(name)) return this;
+
+            var queue = new Queue<Node<T>>();
 
             if (!IsLeaf)
-            {
-                foreach (var child in this.Children!)
-                {
+                foreach (var child in Children!)
                     queue.Enqueue(child);
-                }
-            }
 
             while (queue.Count > 0)
             {
@@ -77,12 +65,8 @@ public class Node<T>
                 }
 
                 if (!nodeInQueue.IsLeaf)
-                {
                     foreach (var child in nodeInQueue.Children!)
-                    {
                         queue.Enqueue(child);
-                    }
-                }
             }
 
             return node;
