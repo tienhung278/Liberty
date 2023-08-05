@@ -7,9 +7,9 @@ public class NodeService<T> : INodeService<T>
 {
     private readonly Node<T> _root = new("root");
 
-    public Task<Node<T>?> GetNodeByNameAsync(string name)
+    public async Task<Node<T>?> GetNodeByNameAsync(string name)
     {
-        return Task.Run(() => _root.FindChild(name));
+        return await _root.FindChildAsync(name);
     }
 
     public async Task<Node<T>> AddNodeAsync(string name, T? data, string? parentName = null)
@@ -18,12 +18,12 @@ public class NodeService<T> : INodeService<T>
 
         if (string.IsNullOrEmpty(parentName))
         {
-            node = _root.AddChild(name, data);
+            node = await _root.AddChildAsync(name, data);
         }
         else
         {
             var parent = await GetNodeByNameAsync(parentName);
-            node = parent?.AddChild(name, data)!;
+            node = await parent?.AddChildAsync(name, data)!;
         }
 
         return node;
@@ -41,7 +41,7 @@ public class NodeService<T> : INodeService<T>
         if (node != null)
         {
             var parent = node.Parent;
-            parent?.DeleteChild(node);
+            await parent?.DeleteChildAsync(node)!;
         }
     }
 }

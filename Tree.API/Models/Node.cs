@@ -36,63 +36,69 @@ public class Node<T> : IEnumerable<Node<T>>
             yield return anyChild;
     }
 
-    public Node<T> AddChild(string name, T? data)
+    public Task<Node<T>> AddChildAsync(string name, T? data)
     {
-        var curNode = FindChild(name);
-        if (curNode != null)
+        return Task.Run(async () =>
         {
-            throw new ArgumentException("Node name was duplicated");
-        }
-        
-        Node<T> node = new(name, data) { Parent = this };
-        Children?.Add(node);
-
-        return node;
-    }
-
-    public void DeleteChild(Node<T> node)
-    {
-        Children?.Remove(node);
-    }
-
-    public Node<T>? FindChild(string name)
-    {
-        Node<T>? node = null;
-        
-        if (Name.Equals(name))
-        {
-            return this;
-        }
-
-        Queue<Node<T>> queue = new Queue<Node<T>>();
-
-        if (!IsLeaf)
-        {
-            foreach (var child in this.Children!)
+            var curNode = await FindChildAsync(name);
+            if (curNode != null)
             {
-                queue.Enqueue(child);
-            }
-        }
-
-        while (queue.Count > 0)
-        {
-            var nodeInQueue = queue.Dequeue();
-
-            if (nodeInQueue.Name.Equals(name))
-            {
-                node = nodeInQueue;
-                break;
+                throw new ArgumentException("Node name was duplicated");
             }
 
-            if (!nodeInQueue.IsLeaf)
+            Node<T> node = new(name, data) { Parent = this };
+            Children?.Add(node);
+
+            return node;
+        });
+    }
+
+    public Task<bool?> DeleteChildAsync(Node<T> node)
+    {
+        return Task.Run(() => Children?.Remove(node));
+    }
+
+    public Task<Node<T>?> FindChildAsync(string name)
+    {
+        return Task.Run(() =>
+        {
+            Node<T>? node = null;
+        
+            if (Name.Equals(name))
             {
-                foreach (var child in nodeInQueue.Children!)
+                return this;
+            }
+
+            Queue<Node<T>> queue = new Queue<Node<T>>();
+
+            if (!IsLeaf)
+            {
+                foreach (var child in this.Children!)
                 {
                     queue.Enqueue(child);
                 }
             }
-        }
 
-        return node;
+            while (queue.Count > 0)
+            {
+                var nodeInQueue = queue.Dequeue();
+
+                if (nodeInQueue.Name.Equals(name))
+                {
+                    node = nodeInQueue;
+                    break;
+                }
+
+                if (!nodeInQueue.IsLeaf)
+                {
+                    foreach (var child in nodeInQueue.Children!)
+                    {
+                        queue.Enqueue(child);
+                    }
+                }
+            }
+
+            return node;
+        });
     }
 }
