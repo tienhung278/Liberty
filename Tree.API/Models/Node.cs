@@ -81,6 +81,7 @@ public class Node<T> : IEnumerable<Node<T>>
             if (nodeInQueue.Name.Equals(name))
             {
                 node = nodeInQueue;
+                break;
             }
 
             if (!nodeInQueue.IsLeaf)
