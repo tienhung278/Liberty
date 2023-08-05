@@ -1,3 +1,4 @@
+using Service1.API.Extensions;
 using Tree.API.Services;
 using Tree.API.Services.Contracts;
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseGlobalException();
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
